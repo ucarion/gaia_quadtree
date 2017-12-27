@@ -1,4 +1,4 @@
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Hash)]
 pub struct Tile {
     pub offset: i16,
     pub level: u8,
@@ -6,7 +6,7 @@ pub struct Tile {
     pub y: u8,
 }
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Hash)]
 pub enum PositionInParent {
     TopLeft,
     TopRight,
