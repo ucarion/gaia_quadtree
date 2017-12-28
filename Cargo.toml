@@ -1,6 +1,6 @@
 [package]
 name = "gaia_quadtree"
-version = "0.1.1"
+version = "0.1.2"
 description = "A Quadtree implementation for use within Gaia"
 authors = ["Ulysse Carion <ulysse@ulysse.io>"]
 license = "MIT"
