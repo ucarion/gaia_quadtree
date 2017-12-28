@@ -86,7 +86,7 @@ impl Tile {
         ]
     }
 
-    fn level_width(level: u8) -> f32 {
+    pub fn level_width(level: u8) -> f32 {
         1.0 / 2.0f32.powi(level as i32)
     }
 }
