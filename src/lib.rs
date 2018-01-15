@@ -1,3 +1,7 @@
+extern crate num;
+
+use num::Integer;
+
 #[derive(PartialEq, Eq, Debug, Hash)]
 pub struct Tile {
     pub offset: i16,
@@ -86,6 +90,7 @@ impl Tile {
         ]
     }
 
+    /// The width of tiles at level `level`.
     pub fn level_width(level: u8) -> f32 {
         1.0 / 2.0f32.powi(level as i32)
     }
@@ -96,6 +101,31 @@ impl Tile {
 
     pub fn tiles_across_height(level: u8) -> u8 {
         Self::tiles_across_width(level) / 2
+    }
+
+    /// Get this tile's neighbor that is `x` tiles to the left/right and `y` tiles to the
+    /// top/bottom.
+    ///
+    /// The y-axis values will be clamped according to the number of tiles along the vertical axis.
+    /// The x-axis values will wrap, incrementing or decrementing the `offset` depending on the
+    /// direction of the wrap.
+    pub fn offset_by(&self, x: i16, y: i16) -> Tile {
+        let overflow_x = self.x as i16 + x;
+        let overflow_y = self.y as i16 + y;
+
+        let width = Self::tiles_across_width(self.level) as i16;
+        let height = Self::tiles_across_height(self.level) as i16;
+
+        let offset = self.offset + overflow_x.div_floor(&width);
+        let x = overflow_x.mod_floor(&width) as u8;
+        let y = num::clamp(overflow_y, 0, height - 1) as u8;
+
+        Tile {
+            offset,
+            level: self.level,
+            x,
+            y,
+        }
     }
 }
 
@@ -256,5 +286,38 @@ mod tests {
     fn tiles_across_height() {
         assert_eq!(1, Tile::tiles_across_height(0));
         assert_eq!(8, Tile::tiles_across_height(3));
+    }
+
+    #[test]
+    fn offset_by() {
+        assert_eq!(
+            Tile {
+                offset: 0,
+                level: 1,
+                x: 1,
+                y: 1,
+            },
+            Tile::new_at_origin(1, 0, 0).offset_by(1, 1)
+        );
+
+        assert_eq!(
+            Tile {
+                offset: 1,
+                level: 1,
+                x: 1,
+                y: 1,
+            },
+            Tile::new_at_origin(1, 0, 0).offset_by(5, 1)
+        );
+
+        assert_eq!(
+            Tile {
+                offset: -3,
+                level: 1,
+                x: 3,
+                y: 0,
+            },
+            Tile::new_at_origin(1, 0, 0).offset_by(-9, -10)
+        );
     }
 }
