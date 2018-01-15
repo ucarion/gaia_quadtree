@@ -89,6 +89,14 @@ impl Tile {
     pub fn level_width(level: u8) -> f32 {
         1.0 / 2.0f32.powi(level as i32)
     }
+
+    pub fn tiles_across_width(level: u8) -> u8 {
+        2u8.pow(level as u32 + 1)
+    }
+
+    pub fn tiles_across_height(level: u8) -> u8 {
+        Self::tiles_across_width(level) / 2
+    }
 }
 
 #[cfg(test)]
@@ -236,5 +244,17 @@ mod tests {
             },
             Tile::enclosing_point(3, [-244.875, 0.5])
         );
+    }
+
+    #[test]
+    fn tiles_across_width() {
+        assert_eq!(2, Tile::tiles_across_width(0));
+        assert_eq!(16, Tile::tiles_across_width(3));
+    }
+
+    #[test]
+    fn tiles_across_height() {
+        assert_eq!(1, Tile::tiles_across_height(0));
+        assert_eq!(8, Tile::tiles_across_height(3));
     }
 }
