@@ -127,6 +127,16 @@ impl Tile {
             y,
         }
     }
+
+    /// This tile, but with `offset` set to zero.
+    pub fn to_origin(&self) -> Tile {
+        Tile {
+            offset: 0,
+            level: self.level,
+            x: self.x,
+            y: self.y,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -319,5 +329,23 @@ mod tests {
             },
             Tile::new_at_origin(1, 0, 0).offset_by(-9, -10)
         );
+    }
+
+    #[test]
+    fn to_origin() {
+        assert_eq!(
+            Tile {
+                offset: 0,
+                level: 1,
+                x: 1,
+                y: 1,
+            },
+            Tile {
+                offset: 1,
+                level: 1,
+                x: 1,
+                y: 1,
+            }.to_origin()
+        )
     }
 }
