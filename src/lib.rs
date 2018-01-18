@@ -73,7 +73,7 @@ impl Tile {
         Self::level_width(self.level)
     }
 
-    pub fn top_left_position(&self) -> [f32; 2] {
+    pub fn bottom_left_position(&self) -> [f32; 2] {
         [
             2.0 * self.offset as f32 + self.x as f32 * self.width(),
             self.y as f32 * self.width(),
@@ -81,13 +81,24 @@ impl Tile {
     }
 
     pub fn bottom_right_position(&self) -> [f32; 2] {
-        let top_left = self.top_left_position();
+        let bottom_left = self.bottom_left_position();
         let width = self.width();
 
-        [
-            top_left[0] + width,
-            top_left[1] + width,
-        ]
+        [bottom_left[0] + width, bottom_left[1]]
+    }
+
+    pub fn top_left_position(&self) -> [f32; 2] {
+        let bottom_left = self.bottom_left_position();
+        let width = self.width();
+
+        [bottom_left[0], bottom_left[1] + width]
+    }
+
+    pub fn top_right_position(&self) -> [f32; 2] {
+        let bottom_left = self.bottom_left_position();
+        let width = self.width();
+
+        [bottom_left[0] + width, bottom_left[1] + width]
     }
 
     /// The width of tiles at level `level`.
@@ -218,49 +229,29 @@ mod tests {
     }
 
     #[test]
-    fn top_left_position() {
-        assert_eq!(
-            [0.0, 0.0],
-            Tile {
-                offset: 0,
-                level: 0,
-                x: 0,
-                y: 0,
-            }.top_left_position()
-        );
+    fn position() {
+        let tile_a = Tile {
+            offset: 0,
+            level: 0,
+            x: 0,
+            y: 0,
+        };
 
-        assert_eq!(
-            [-244.875, 0.5],
-            Tile {
-                offset: -123,
-                level: 3,
-                x: 9,
-                y: 4,
-            }.top_left_position()
-        );
-    }
+        let tile_b = Tile {
+            offset: -123,
+            level: 3,
+            x: 9,
+            y: 4,
+        };
 
-    #[test]
-    fn bottom_right_position() {
-        assert_eq!(
-            [1.0, 1.0],
-            Tile {
-                offset: 0,
-                level: 0,
-                x: 0,
-                y: 0,
-            }.bottom_right_position()
-        );
-
-        assert_eq!(
-            [-244.75, 0.625],
-            Tile {
-                offset: -123,
-                level: 3,
-                x: 9,
-                y: 4,
-            }.bottom_right_position()
-        );
+        assert_eq!([0.0, 0.0], tile_a.bottom_left_position());
+        assert_eq!([-244.875, 0.5], tile_b.bottom_left_position());
+        assert_eq!([1.0, 0.0], tile_a.bottom_right_position());
+        assert_eq!([-244.75, 0.5], tile_b.bottom_right_position());
+        assert_eq!([0.0, 1.0], tile_a.top_left_position());
+        assert_eq!([-244.875, 0.625], tile_b.top_left_position());
+        assert_eq!([1.0, 1.0], tile_a.top_right_position());
+        assert_eq!([-244.75, 0.625], tile_b.top_right_position());
     }
 
     #[test]
