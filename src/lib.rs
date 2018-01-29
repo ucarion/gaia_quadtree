@@ -2,7 +2,7 @@ extern crate num;
 
 use num::Integer;
 
-#[derive(PartialEq, Eq, Debug, Hash)]
+#[derive(PartialEq, Eq, Debug, Hash, Clone)]
 pub struct Tile {
     pub offset: i16,
     pub level: u8,
@@ -10,7 +10,7 @@ pub struct Tile {
     pub y: u8,
 }
 
-#[derive(PartialEq, Eq, Debug, Hash)]
+#[derive(PartialEq, Eq, Debug, Hash, Clone)]
 pub enum PositionInParent {
     TopLeft,
     TopRight,
